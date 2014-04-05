@@ -1,15 +1,15 @@
 """
 Module that implements a basic DIAL protocol client.
 Usage:
-     import pydial.client
-     servers = pydial.client.discover()
-     client = pydial.client.DialClient(servers[0])
+     import pydial
+     servers = pydial.discover()
+     client = pydial.DialClient(servers[0])
      device = client.get_device_description()
      client.launch_app('YouTube')
 
+Based on code from PyChromecast - https://github.com/balloob/pychromecast
 """
 
-# Based on code from PyChromecast - https://github.com/balloob/pychromecast
 import select
 import socket
 import requests
@@ -21,7 +21,8 @@ from collections import namedtuple
 
 from .common import (SSDP_ADDR, SSDP_PORT, SSDP_MX, SSDP_ST)
 
-DISCOVER_TIMEOUT = 10
+# Wait at least one second past the SSDP_MX to give servers a chance to respond
+DISCOVER_TIMEOUT = SSDP_MX + 1
 
 SSDP_REQUEST = 'M-SEARCH * HTTP/1.1\r\n' + \
                   'HOST: {}:{:d}\r\n'.format(SSDP_ADDR, SSDP_PORT) + \
@@ -108,7 +109,6 @@ class DialClient(requests.Session):
                protocols = []
 
           activity_el = status_el.find(XML_NS_CAST + "activity-status")
-
           if activity_el is not None:
                description = _read_xml_element(activity_el, XML_NS_CAST,
                                             "description", app_id)
@@ -148,6 +148,7 @@ class DialClient(requests.Session):
      def get_device_description(self):
           """ Returns the device status as a named tuple. Initializes the
           app path if not initialized."""
+          # FIXME: Error handling? Probably should throw errors up.
           try:
                req = self.get(_BASE_URL.format(self.dev_host, self.dev_port, \
                     self.dev_descrip_path))
@@ -197,14 +198,11 @@ def discover(max_devices=None, timeout=DISCOVER_TIMEOUT):
      start = dt.datetime.now()
 
      with closing(socket.socket(socket.AF_INET, socket.SOCK_DGRAM)) as sock:
-
           sock.sendto(SSDP_REQUEST, (SSDP_ADDR, SSDP_PORT))
-
           sock.setblocking(0)
 
           while True:
                time_diff = dt.datetime.now() - start
-
                seconds_left = timeout - time_diff.seconds
 
                if seconds_left <= 0:
@@ -214,9 +212,7 @@ def discover(max_devices=None, timeout=DISCOVER_TIMEOUT):
 
                if ready:
                     response = sock.recv(1024)
-
                     found_url = found_st = None
-
                     headers = response.split("\r\n\r\n", 1)[0]
 
                     for header in headers.split("\r\n"):
