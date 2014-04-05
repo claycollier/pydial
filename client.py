@@ -248,13 +248,3 @@ def _read_xml_element(element, xml_ns, tag_name, default=""):
 
      except AttributeError:
           return default
-
-def main():
-     servers = discover(1)
-     client = DialClient(servers[0])
-     client.get_device_description()
-     print client.get_app_status('Netflix')
-     print client.get_app_status('YouTube')
-
-if __name__ == '__main__':
-     main()
