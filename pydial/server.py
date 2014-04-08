@@ -4,6 +4,7 @@ import struct
 import time
 import platform
 import random
+import uuid
 
 from .common import (SSDP_PORT, SSDP_ADDR, SSDP_ST)
 
@@ -22,7 +23,8 @@ SSDP_REPLY = 'HTTP/1.1 200 OK\r\n' + \
                'BOOTID.UPNP.ORG: 1\r\n' + \
                'SERVER: {}/{} UPnP/1.1 {}/{}\r\n' + \
                'ST: {}\r\n'.format(SSDP_ST) + \
-               'DATE: {}\r\n' + '\r\n'
+               'DATE: {}\r\n' + \
+               'USN: {}\r\n' + '\r\n'
 
 
 class SSDPHandler(SocketServer.BaseRequestHandler):
@@ -53,7 +55,6 @@ class SSDPHandler(SocketServer.BaseRequestHandler):
                for line in data[1:]:
                     field, val = line.split(':', 1)
                     if field.strip() == 'ST' and val.strip() == SSDP_ST:
-                         print 'valid request'
                          dial_search = True
                     elif field.strip() == 'MX':
                          try:
@@ -73,13 +74,11 @@ class SSDPHandler(SocketServer.BaseRequestHandler):
           reply_data = SSDP_REPLY.format(self.server.device_url,
                     self.server.cache_expire, self.server.os_id,
                     self.server.os_version, self.server.product_id,
-                    self.server.product_version, timestamp)
+                    self.server.product_version, timestamp, self.server.uuid)
 
           sent = 0
           while sent < len(reply_data):
                sent += _socket.sendto(reply_data, self.client_address)
-
-          return
 
 class SSDPServer(SocketServer.UDPServer):
      """
@@ -89,19 +88,24 @@ class SSDPServer(SocketServer.UDPServer):
      replying with information on the URL used to request app
      actions from the server.
 
+     Parameters:
+          -device_url: Absolute URL of the device being advertised.
+          -host: host/IP address to listen on
+
      The following attributes are set by default, but should be
      changed if you want to use this class as the basis for a 
      more complete server:
-     product_id - Name of the server/product. Defaults to PyDial server
+     product_id - Name of the server/product. Defaults to PyDial Server.
      product_version - Product version. Defaults to whatever version
           number PyDial was given during the last release.
-     os_id - Operating system name. Set via platform.system().
-     os_version - Operating system version. Set via platform.release().
-     cache_expire - Time (in seconds) before a SSDP reply/advertisement
-          expires.
+     os_id - Operating system name. Default: platform.system()
+     os_version - Operating system version. Default: platform.release().
+     cache_expire - Time (in seconds) before a reply/advertisement expires.
+          Defaults to 1800.
+     uuid - UUID. By default created from the NIC via uuid.uuid1()
      """
-     def __init__(self, device_url, host='', port=SSDP_PORT):
-          SocketServer.UDPServer.__init__(self, (host, port), 
+     def __init__(self, device_url, host=''):
+          SocketServer.UDPServer.__init__(self, (host, SSDP_PORT), 
                     SSDPHandler, False)
           self.allow_reuse_address = True
           self.server_bind()
@@ -115,6 +119,7 @@ class SSDPServer(SocketServer.UDPServer):
           self.os_id = platform.system()
           self.os_version = platform.release()
           self.cache_expire = CACHE_DEFAULT
+          self.uuid = uuid.uuid1()
 
      def start(self):
           self.serve_forever()
