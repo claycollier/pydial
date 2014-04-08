@@ -32,7 +32,6 @@ SSDP_REQUEST = 'M-SEARCH * HTTP/1.1\r\n' + \
                   '\r\n'
 
 
-# TODO: Can probably be built using urlparse.unparse...
 _BASE_URL = "http://{}:{}{}"
 DeviceStatus = namedtuple("DeviceStatus",
                           ["friendly_name", "model_name",
@@ -77,7 +76,7 @@ class DialClient(requests.Session):
           req = requests.Request('GET', url).prepare()
           response = self.send(req)
 
-          # FIXME: Raise an exception here
+          # FIXME: Raise an exception here?
           # TODO: Look for 404 in case app is not present
           if response.status_code == 204:
                return None
@@ -185,7 +184,7 @@ class DialClient(requests.Session):
                return None 
 
 
-def discover(max_devices=None, timeout=DISCOVER_TIMEOUT):
+def discover(max_devices=None, timeout=DISCOVER_TIMEOUT, verbose=False):
      """
      Sends a message over the network to discover DIAL servers and returns
      a list of found IP addresses.
@@ -212,6 +211,8 @@ def discover(max_devices=None, timeout=DISCOVER_TIMEOUT):
 
                if ready:
                     response = sock.recv(1024)
+                    if verbose:
+                         print response
                     found_url = found_st = None
                     headers = response.split("\r\n\r\n", 1)[0]
 
