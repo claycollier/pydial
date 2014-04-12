@@ -13,7 +13,7 @@ Based on code from PyChromecast - https://github.com/balloob/pychromecast
 import select
 import socket
 import requests
-from urlparse import urlparse
+from urllib.parse import urlparse
 import datetime as dt
 from contextlib import closing
 import xml.etree.ElementTree as ET
@@ -129,7 +129,7 @@ class DialClient(requests.Session):
           req = requests.Request('POST', url, data=args, headers=header)
           prepped = req.prepare()
           response = self.send(prepped)
-          print response
+          print(response)
 
      def quit_app(self, app_id=None):
           """ Quits specified application if it is running.
@@ -212,7 +212,7 @@ def discover(max_devices=None, timeout=DISCOVER_TIMEOUT, verbose=False):
                if ready:
                     response = sock.recv(1024)
                     if verbose:
-                         print response
+                         print(response)
                     found_url = found_st = None
                     headers = response.split("\r\n\r\n", 1)[0]
 

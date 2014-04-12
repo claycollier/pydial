@@ -1,4 +1,4 @@
-import SocketServer
+import socketserver
 import socket
 import struct
 import time
@@ -27,7 +27,7 @@ SSDP_REPLY = 'HTTP/1.1 200 OK\r\n' + \
                'USN: {}\r\n' + '\r\n'
 
 
-class SSDPHandler(SocketServer.BaseRequestHandler):
+class SSDPHandler(socketserver.BaseRequestHandler):
      """
      RequestHandler object to deal with DIAL UPnP search requests.
 
@@ -37,7 +37,7 @@ class SSDPHandler(SocketServer.BaseRequestHandler):
      you are not using the multi-thread or forking mixin.
      """
      def __init__(self, request, client_address, server):
-          SocketServer.BaseRequestHandler.__init__(self, request, 
+          socketserver.BaseRequestHandler.__init__(self, request, 
                          client_address, server)
           self.max_delay = DELAY_DEFAULT
 
@@ -80,7 +80,7 @@ class SSDPHandler(SocketServer.BaseRequestHandler):
           while sent < len(reply_data):
                sent += _socket.sendto(reply_data, self.client_address)
 
-class SSDPServer(SocketServer.UDPServer):
+class SSDPServer(socketserver.UDPServer):
      """
      Inherits from SocketServer.UDPServer to implement the SSDP
      portions of the DIAL protocol- listening for search requests
@@ -105,7 +105,7 @@ class SSDPServer(SocketServer.UDPServer):
      uuid - UUID. By default created from the NIC via uuid.uuid1()
      """
      def __init__(self, device_url, host=''):
-          SocketServer.UDPServer.__init__(self, (host, SSDP_PORT), 
+          socketserver.UDPServer.__init__(self, (host, SSDP_PORT), 
                     SSDPHandler, False)
           self.allow_reuse_address = True
           self.server_bind()
