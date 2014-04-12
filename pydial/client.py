@@ -12,12 +12,14 @@ Based on code from PyChromecast - https://github.com/balloob/pychromecast
 
 import select
 import socket
-import requests
 from urllib.parse import urlparse
 import datetime as dt
 from contextlib import closing
 import xml.etree.ElementTree as ET
 from collections import namedtuple
+import codecs
+
+import requests
 
 from .common import (SSDP_ADDR, SSDP_PORT, SSDP_MX, SSDP_ST)
 
@@ -197,7 +199,7 @@ def discover(max_devices=None, timeout=DISCOVER_TIMEOUT, verbose=False):
      start = dt.datetime.now()
 
      with closing(socket.socket(socket.AF_INET, socket.SOCK_DGRAM)) as sock:
-          sock.sendto(SSDP_REQUEST, (SSDP_ADDR, SSDP_PORT))
+          sock.sendto(bytes(SSDP_REQUEST, 'utf-8'), (SSDP_ADDR, SSDP_PORT))
           sock.setblocking(0)
 
           while True:
@@ -210,7 +212,7 @@ def discover(max_devices=None, timeout=DISCOVER_TIMEOUT, verbose=False):
                ready = select.select([sock], [], [], seconds_left)[0]
 
                if ready:
-                    response = sock.recv(1024)
+                    response = str(sock.recv(1024), 'utf-8')
                     if verbose:
                          print(response)
                     found_url = found_st = None

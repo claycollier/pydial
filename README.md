@@ -1,4 +1,4 @@
-NOTE: PyDial is currently pre-alpha, and in the middle of being ported from Python 2.7 to Python 3.x. The 2.x client branch basically works; the 2.x server can answer UPnP discovery requests, but doesn't implement the rest of DIAL. The 3.x client/server kit is mid-port and may not be working at any given moment.
+NOTE: PyDial is currently pre-alpha, and in the middle of being ported from Python 2.7 to Python 3.x. The 2.x client branch basically works; the 2.x server can answer UPnP discovery requests, but doesn't implement the rest of DIAL. The 3.x client/server kit is mid-port and may not be working at any given moment. As of 4/12/14, server discovery was working but other client funcionts hadn't been tested.
 
 pydial
 ======
