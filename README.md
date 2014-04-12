@@ -19,9 +19,11 @@ Wikipedia description of the DIAL protocol: http://en.wikipedia.org/wiki/DIscove
 * The UPnP device architecture specification: http://www.upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.0-20080424.pdf
 
 == Acknowledgements ==
+
 Code for the PyDial client code was derived from the PyChromecast project: https://github.com/balloob/pychromecast
 
 == Licensing and Legal ==
+
 See the LICENSE file for complete licensing information.
 
 PyDial is distributed under the MIT license.
