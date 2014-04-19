@@ -17,7 +17,6 @@ import datetime as dt
 from contextlib import closing
 import xml.etree.ElementTree as ET
 from collections import namedtuple
-import codecs
 
 import requests
 

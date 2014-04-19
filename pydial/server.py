@@ -47,7 +47,8 @@ class SSDPHandler(socketserver.BaseRequestHandler):
           search parameters and UPnP search target, and replies
           with the application URL that the server advertises.
           """
-          data = self.request[0].strip().split('\r\n')
+          data = str(self.request[0], 'utf-8')
+          data = data.strip().split('\r\n')
           if data[0] != UPNP_SEARCH:
                return
           else:
@@ -78,7 +79,7 @@ class SSDPHandler(socketserver.BaseRequestHandler):
 
           sent = 0
           while sent < len(reply_data):
-               sent += _socket.sendto(reply_data, self.client_address)
+               sent += _socket.sendto(bytes(reply_data, 'utf-8'), self.client_address)
 
 class SSDPServer(socketserver.UDPServer):
      """
