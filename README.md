@@ -15,16 +15,19 @@ DIAL was developed by Netflix and Google; complete details are available here: h
 
 Wikipedia description of the DIAL protocol: http://en.wikipedia.org/wiki/DIscovery_And_Launch
 
-== Resources ==
+Resources
+---------
 
 * The DIAL protocol specification: http://www.dial-multiscreen.org/dial-protocol-specification
 * The UPnP device architecture specification: http://www.upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.0-20080424.pdf
 
-== Acknowledgements ==
+Acknowledgements
+----------------
 
 Code for the PyDial client code was derived from the PyChromecast project: https://github.com/balloob/pychromecast
 
-== Licensing and Legal ==
+Licensing and Legal
+-------------------
 
 See the LICENSE file for complete licensing information.
 
