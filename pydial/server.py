@@ -18,7 +18,7 @@ VERSION = '0.01'
 
 SSDP_REPLY = 'HTTP/1.1 200 OK\r\n' + \
                'LOCATION: {}\r\n' + \
-               'CACHE-CONTROL: {}\r\n' + \
+               'CACHE-CONTROL: max-age={}\r\n' + \
                'EXT:\r\n' + \
                'BOOTID.UPNP.ORG: 1\r\n' + \
                'SERVER: {}/{} UPnP/1.1 {}/{}\r\n' + \
