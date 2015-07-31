@@ -74,7 +74,7 @@ class SSDPHandler(SocketServer.BaseRequestHandler):
           reply_data = SSDP_REPLY.format(self.server.device_url,
                     self.server.cache_expire, self.server.os_id,
                     self.server.os_version, self.server.product_id,
-                    self.server.product_version, timestamp, self.server.uuid)
+                    self.server.product_version, timestamp, "uuid:"+str(self.server.uuid))
 
           sent = 0
           while sent < len(reply_data):
