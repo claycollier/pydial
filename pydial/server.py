@@ -18,7 +18,7 @@ VERSION = '0.01'
 
 SSDP_REPLY = 'HTTP/1.1 200 OK\r\n' + \
                'LOCATION: {}\r\n' + \
-               'CACHE-CONTROL: {}\r\n' + \
+               'CACHE-CONTROL: max-age={}\r\n' + \
                'EXT:\r\n' + \
                'BOOTID.UPNP.ORG: 1\r\n' + \
                'SERVER: {}/{} UPnP/1.1 {}/{}\r\n' + \
@@ -75,7 +75,7 @@ class SSDPHandler(socketserver.BaseRequestHandler):
           reply_data = SSDP_REPLY.format(self.server.device_url,
                     self.server.cache_expire, self.server.os_id,
                     self.server.os_version, self.server.product_id,
-                    self.server.product_version, timestamp, self.server.uuid)
+                    self.server.product_version, timestamp, "uuid:"+str(self.server.uuid))
 
           sent = 0
           while sent < len(reply_data):
